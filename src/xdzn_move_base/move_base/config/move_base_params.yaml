@@ -1,0 +1,47 @@
+#当move_base进入inactive状态时候，决定是否停用节点的costmap。
+shutdown_costmaps: true
+
+#以Hz为单位的速率运行控制循环并向基座发送速度命令。太大会占用CPU 这里我们设置为5， 好点的处理器可以设置稍高。
+controller_frequency: 10.0
+
+#全局路径规划器loop速率。如果设置这个为0.0, 当收到新目标点或者局部路径规划器报告路径不通时候全局路径规划器才启动。
+planner_frequency: 0.0
+
+#恢复操作之前尝试规划的次数，-1代表无上限的不断尝试。(int32_t, default: -1) 
+max_planning_retries: 10
+
+# 执行修复操作之前，允许的震荡时间是几秒。 值0意味着永不超时。
+# 配合oscillation_distance使用, 到达终点时容易出现因为震荡超时导致的错误, 暂时设为0, 还需要研究其具体作用
+oscillation_timeout: 0
+
+#机器人需要移动多少距离才算作没有震荡。 移动完毕后重置定时器计入参数~oscillation_timeout。
+oscillation_distance: 0.05
+
+#是否启用move_base修复机制来清理出空间。
+recovery_behavior_enabled: false
+
+#决定做清理空间操作时候，机器人是否会采用原地旋转。注意：该参数仅用于move_base使用了默认参数的情况，这意味着用户尚未将recovery_behaviors参数设置为任何自定义形式。
+clearing_rotation_allowed: false
+
+#在空间清理操作执行前，路径规划器等待多长时间（秒）用来找出一个有效规划。
+planner_patience: 5.0
+
+#当在地图中清理出空间时候，距离机器人几米远的障碍将会从costmap清除。注意：该参数仅用于move_base使用了默认参数的情况。 (double, default: 3.0) 
+conservative_reset_dist: 3.0
+
+#在空间清理操作执行前，控制器会等待多长时间（秒）用来找出一个有效控制。
+controller_patience: 3.0
+
+
+# 设置move_base的全局路径规划器的插件名称，该插件必须继承自此插件nav_core包中指定的nav_core::BaseGlobalPlanner 接口。(1.0 series default: "NavfnROS")
+base_global_planner: "global_planner/GlobalPlanner"
+
+# 设置move_base的局部路径规划器的插件名称，该插件必须继承自此插件nav_core包中指定的nav_core::BaseGlobalPlanner 接口。(1.0 series default: "TrajectoryPlannerROS")
+# "base_local_planner/TrajectoryPlannerROS"
+# "dwa_local_planner/DWAPlannerROS"
+base_local_planner: "dwa_local_planner/DWAPlannerROS"
+
+# 指定用于move_base的修复操作插件列表，当move_base不能找到有效的计划的时候，将按照这里指定的顺序执行这些操作。每个操作执行完成后，move_base都会尝试生成有效的计划。如果该计划生成成功，move_base会继续正常运行。否则，下一个修复操作启动执行。
+# recovery_behaviors: (list, default: [{name: conservative_reset, type: clear_costmap_recovery/ClearCostmapRecovery}, {name: rotate_recovery, type: rotate_recovery/RotateRecovery}, {name: aggressive_reset, type: clear_costmap_recovery/ClearCostmapRecovery}] For 1.1+ series) 
+
+

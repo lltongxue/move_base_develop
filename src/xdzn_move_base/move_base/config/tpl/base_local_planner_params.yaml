@@ -1,0 +1,135 @@
+TrajectoryPlannerROS:
+
+###############################################
+# Robot Configuration Parameters 机器人配置参数
+###############################################
+
+  # (double, default: 0.5)：允许的前进速度的最大值，单位是米/秒
+  # 设置为标定机器人线速度时使用的速度会比较理想
+  max_vel_x: 0.5
+
+  # (double, default: 0.1)：允许的前进速度最小值，单位是米/秒
+  min_vel_x: 0.1
+
+  # (double, default: 0.1)：允许的平移速度最大值，单位是米/秒(差动轮驱动时，该值为0)
+  max_vel_y: 0
+
+  # (double, default: 0.1)：允许的平移速度最小值，单位是米/秒(差动轮驱动时，该值为0)
+  min_vel_y: 0
+
+  # (double, default: 1.0)：允许的旋转速度最大值，单位是弧度/秒
+  # 设置为标定机器人角速度时使用的速度比较理想
+  max_vel_theta: 1
+
+  # (double, default: -1.0)：允许的旋转速度最小值，单位是弧度/秒
+  min_vel_theta: 0.1
+
+  # (double, default: 0.4)：在以弧度/秒为单位进行原地旋转时，基座允许的最小旋转速度
+  min_in_place_vel_theta: 0.3
+
+  # (double, default: -0.1)：躲避时行驶的速度，单位为米/秒。请注意，它必须是负的，以便机器人实际逆转。正速度会导致机器人在试图躲避时向前移动。
+  escape_vel: -0.05
+
+  # (double, default:2.5):机器人的x方向加速度限制，单位是米/秒2
+  acc_lim_x: 0.3
+
+  # (double, default: 2.5)：机器人的y方向加速度限制，单位是米/秒2(差动轮驱动时，该值为0)
+  acc_lim_y: 0
+
+  # (double, default: 3.2):机器人的旋转加速度限制，单位是弧度/秒2
+  acc_lim_theta: 3.2
+
+  # (bool, default: true)：确定为完整机器人或非完整机器人生成速度命令。对于完整的机器人，可以向基座发出扫射速度命令。对于非完整机器人，不会发出扫射速度命令。
+  holonomic_robot: false
+
+  # y_vels(list, default: [-0.3, -0.1, 0.1, 0.3])：完整机器人考虑的扫射速度，单位为米/秒
+
+###############################################
+# Goal Tolerance Parameters 目标公差参数
+###############################################
+
+  # (double, default: 0.05)：控制器在实现其目标时的偏航/旋转的弧度公差
+  yaw_goal_tolerance: 0.1
+
+  # (double, default: 0.10)：控制器在达到目标时，在x和y距离上的公差以米为单位
+  xy_goal_tolerance: 0.05
+
+  # (bool, default: false)：如果目标公差被锁定，机器人到达目标xy位置，它将简单地原地旋转，即使它在这样做的时候超出了目标公差。
+  latch_xy_goal_tolerance: false
+
+###############################################
+# Forward Simulation Parameters 正向仿真参数
+###############################################
+
+  # (double, default: 1.0):向前模拟轨迹的时间量,以秒为单位
+  sim_time: 3.0
+
+  # (double, default: 0.025):在给定轨迹上的点之间采用的步长（以米为单位）
+  sim_granularity: 0.025
+
+  # (double, default: ~/sim_granularity):在给定轨迹上,采用角度样本之间的步长。以弧度表示
+  angular_sim_granularity: 0.025
+
+  # (integer, default: 3)：探索x速度空间时要使用的样本数
+  vx_samples: 4
+
+  # (integer, default: 3)：探索y速度空间时要使用的样本数(差动轮驱动时，该值为0)
+  vy_samples: 0
+
+  # (integer, default: 20)：探索θ速度空间时要使用的样本数
+  vtheta_samples: 10
+
+  # (double, default: 20.0)：以Hz为单位调用此控制器的频率。
+  controller_frequency: 20.0
+
+###############################################
+# Trajectory Scoring Parameters 轨迹评分参数
+###############################################
+
+  # (bool, default: false)：无论gdist_scale和pdist_scale参数，应该假定goal_distance和path_distance被表示，米或单元格。默认情况下假设单元格。
+  meter_scoring: false
+
+  # (double, default: 0.6)：控制器应该保持接近给定路径的权重，最大可能值为5.0
+  pdist_scale: 3
+
+  # (double, default: 0.8)：控制器应该尝试达到其本地目标的权重，还有控制速度，最大可能值为5.0
+  gdist_scale: 0.6
+
+  # 是否根据机器人前往路径或距离路径的距离进行评分
+  heading_scoring: true
+
+  # (double, default: 0.325)：
+  heading_lookahead: 0.325
+
+  # (double, default: 0.8)：使用航向评分时，沿着模拟轨迹在几秒钟内向前看的距离
+  heading_scoring_timestep: 1
+
+  # (double, default: 0.01)：控制器应该试图避开障碍物的权重
+  occdist_scale: 0.0  
+
+  # (bool, default: false)：是否发布规划器在规划时将使用的成本网格。
+  # 如果为true，则〜/cost_cloud主题上将提供sensor_msgs/PointCloud2。
+  # 每个点云代表成本网格，并且每个单独的评分函数组件都有一个字段以及每个单元的总成本，并考虑评分参数。
+  publish_cost_grid_pc: true
+
+  # (bool, default: true)：是否使用动态窗口方法（DWA）或是否使用轨迹展开
+  dwa: true
+
+  # (string, default: odom)：要为cost_cloud设置的框架。应设置为与本地costmap的全局框架相同的框架。
+  global_frame_id: odom
+
+###############################################
+# Oscillation Prevention Parameters 防震荡参数
+###############################################
+  # (double, default: 0.05)：机器人运动多远距离才会重置振荡标记.
+  oscillation_reset_dist: 0.02
+
+###############################################
+# Global Plan Parameters 全局规划参数
+###############################################
+  # (bool, default: true)：机器人前进是是否清除身后1m外的轨迹.
+  prune_plan: true
+
+
+# 未知参数
+  simple_attractor: false

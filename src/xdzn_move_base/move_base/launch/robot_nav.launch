@@ -1,0 +1,28 @@
+<launch>
+
+    <param name="use_sim_time" value="false" />
+
+    <!-- 设置地图的配置文件 -->
+    <arg name="map" default="marker" />
+
+    <!-- 运行地图服务器，并且加载设置的地图-->
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find move_base)/maps/test_map/$(arg map).yaml"/>
+
+    <node name="static_odom" pkg="static_odom" type="static_odom" />
+
+    <!-- <include file="$(find transform_velocity)/launch/transform.launch" /> -->
+
+    <!-- 运行move_base节点 -->
+    <include file="$(find move_base)/launch/move_base.launch" />
+
+    <!-- 启动AMCL节点 -->
+    <!-- <include file="$(find move_base)/launch/amcl.launch" /> -->
+
+    <!-- 运行机器人模型节点 -->
+    <include file="$(find robot_model)/launch/robot.launch" />
+
+    <!-- 运行rviz -->
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find move_base)/rviz/nav.rviz"/>
+
+
+</launch>

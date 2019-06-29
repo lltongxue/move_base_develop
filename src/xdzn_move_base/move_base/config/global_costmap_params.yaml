@@ -1,0 +1,48 @@
+global_costmap:
+#################################################
+# Coordinate frame and tf parameters 坐标系和TF参数
+#################################################
+
+   # (string, default: "/map")：Costmap操作的全局框架。
+   global_frame: map
+
+   # (string, default: "base_link")：机器人base link的框架名称。
+   robot_base_frame: base_link
+
+   # (double, default: 0.2) [0,10]：指定转换（tf）数据中可容忍的延迟（秒）。
+   # 这个参数可以保护在tf树中丢失一个link的同时仍然允许用户在系统中舒适地存在一定的延迟。
+   # 如果全局帧指定的坐标帧与robot基本帧参数之间的tf转换是早于ros::time::now() 的transform_tolerance时间，则导航堆栈将停止robot。
+   transform_tolerance: 1.0
+
+#################################################
+# Rate parameters 更新频率参数
+#################################################
+
+   # (double, default: 5.0) [0,100]：要更新地图的频率，单位Hz
+   update_frequency: 1.0
+
+   # (double, default: 0.0) [0,100]：地图发布显示信息的频率，单位Hz
+   publish_frequency: 0
+
+#################################################
+# Map management parameters 地图管理参数
+#################################################
+
+   # 是否使用静态地图
+   static_map: true
+
+   # (bool, default: false):是否使用滚动窗口版本的成本地图。如果static_map参数设置为true，则必须将此参数设置为false。
+   rolling_window: false
+   
+   # (bool, default: false):如果为true，则每次更新都会将完整的Costmap发布到“~/costmap”。如果为false，则仅在“~/costmap_updates”主题上发布已更改的Costmap部分。
+   always_send_full_costmap: false
+   
+   map_type: costmap
+
+   # 插件规范的顺序，每层一个。每个规范都是一个带有名称和类型字段的字典。该名称用于定义插件的参数命名空间。
+   # 配置看链接http://wiki.ros.org/costmap_2d/Tutorials/Configuring%20Layered%20Costmaps
+   plugins:
+      - {name: static_layer,    type: "costmap_2d::StaticLayer"}
+      - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
+   #  - {name: obstacle_layer,  type: "costmap_2d::ObstacleLayer"}
+    

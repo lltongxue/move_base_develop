@@ -1,0 +1,7 @@
+image: marker.jpg
+resolution: 0.016
+origin: [-11.8, -5.1, 0.000000]
+negate: 0
+occupied_thresh: 0.5
+free_thresh: 0.196
+

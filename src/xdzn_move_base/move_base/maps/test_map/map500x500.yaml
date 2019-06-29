@@ -1,0 +1,7 @@
+image: map500x500.jpg
+resolution: 0.02
+origin: [-6, -5.4, 0.000000]
+negate: 0
+occupied_thresh: 0.5
+free_thresh: 0.196
+

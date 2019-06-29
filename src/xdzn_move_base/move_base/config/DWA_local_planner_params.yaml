@@ -1,0 +1,179 @@
+DWAPlannerROS:
+# 默认参数值在文件/devel/include/dwa_local_planner/DWAPlannerConfig.h 中可查看
+
+####################################################################
+# 机器人配置参数
+####################################################################
+  # (double, default: 20.0)以Hz为单位调用此控制器的频率。
+  # 如果未在控制器的命名空间中设置，则使用searchParam从父命名空间读取参数。
+  # 要与move_base一起使用
+  # 在move_base_params.yaml中配置后，局部规划器无需配置
+  # controller_frequency: 20.0
+
+  # (double, default: 0.55)允许的X轴向速度的最大值，单位是米/秒
+  # 设置为标定机器人线速度时使用的速度会比较理想
+  max_vel_x: 1
+
+  # (double, default: 0.0)允许的X轴向速度最小值，单位是米/秒
+  min_vel_x: 0.1
+
+  # (double, default: 0.1)允许的Y轴向速度最大值，单位是米/秒(差分驱动时，该值为0)
+  max_vel_y: 0.0
+
+  # (double, default: -0.1)允许的Y轴向速度最小值，单位是米/秒(差分驱动时，该值为0)
+  min_vel_y: 0.0
+
+  # 暂未发现作用，当最大线速度小于此值时，会存在问题，暂不设置
+  # 此处影响局部规划中速度采样，确保机器人至少以所需的最小移动速度进行移动和旋转（如果设置）
+  # 在simple_trajectory_genetrator.cpp中有具体计算
+  # (double, default:0.55)
+  max_vel_trans:  0.55
+
+  # (double, default:0.1) 若是运行速度小于min_vel_trans，则这个速度采样不采用
+  min_vel_trans:  0.1
+
+  # (double, default:0.1)
+  trans_stopped_vel: 0.1
+
+  # (double, default:0.1)
+  # theta_stopped_vel: 0.1
+
+  # (double, default: 1.0)允许的旋转速度最大值，单位是弧度/秒
+  # 设置为标定机器人角速度时使用的速度比较理想
+  max_vel_theta: 1.0
+
+  # # (double, default: 0.4)允许的旋转速度最小值，单位是弧度/秒
+  min_vel_theta: 0.3
+
+  theta_stopped_vel: 0.3
+
+  # (double, default:2.5)[0,20]机器人的x方向加速度限制，单位是米/秒2
+  acc_lim_x: 2
+
+  # (double, default: 3.2)[0,20]机器人的旋转加速度限制，单位是弧度/秒2
+  acc_lim_theta: 4
+
+  # (double, default: 2.5)[0,20]机器人的y方向加速度限制，单位是米/秒2(差分驱动时，该值为0)
+  acc_lim_y: 0.0
+
+  # max_glpla_bodypose_dtheta: 0.8
+
+  # (double, default: 0.1)
+  # acc_lim_trans: 0.0
+
+  # (double, default: 1) [0,1]
+  # use_dwa: 1
+
+  # (double, default: 0.0)[0,1]
+  # prune_plan: 0.0
+
+####################################################################
+# 目标公差参数
+# 计算机器人达到目标时允许的误差范围，在此范围内均认为机器人已到达目标
+####################################################################
+
+  # (double, default: 0.1)实现目标在偏航/旋转时的弧度公差
+  yaw_goal_tolerance: 0.05
+
+  # (double, default: 0.1)达到目标时，控制器在x和y距离内的公差（米）
+  xy_goal_tolerance: 0.1
+
+  # (double, default: 0.05)实现机器人在调整方向朝向全局路径时的弧度公差
+  yaw_plan_tolerance: 0.05
+
+
+  # (bool, default: false)如果目标公差被锁定，机器人到达目标xy位置，它将简单地原地旋转，即使它在这样做的时候超出了目标公差。
+  latch_xy_goal_tolerance: true
+
+  # 下面两个参数在代码中是通过path_distance_bias和goal_distance_bias计算得出
+  # pdist_scale: 0.8
+  # gdist_scale: 0.4
+
+####################################################################
+# 正向运动模拟参数
+####################################################################
+
+  # (double, default: 1.7)以秒为单位向前模拟轨迹的时间量
+  # 时间越长，模拟生成的轨迹越长，如果机器人底盘自身运动和反馈足够精确，应该可以设置更长的模拟时间
+  sim_time: 1.7
+
+  # (double, default: 0.025)在给定轨迹上的点之间采用的步长（以米为单位）
+  sim_granularity: 0.025
+
+  # (double, default: 0.1)角度的固定步长
+  # angular_sim_granularity:
+  
+  # (int, default: 3)[1,2147483647]探索x速度空间时要使用的样本数
+  vx_samples: 10
+
+  # (int, default: 10)[1,2147483647]探索y速度空间时要使用的样本数
+  vy_samples: 0
+
+  # (int, default: 20) [1,2147483647]探索θ速度空间时要使用的样本数
+  # vth_samples: 10
+
+####################################################################
+# 轨迹评分参数
+#
+# 用于对每个轨迹进行评分的成本函数采用以下形式：
+# 成本 = 
+#   path_distance_bias *（距离轨迹端点的路径距离，以米为单位）
+#   + goal_distance_bias *（距离轨迹端点到本地目标的距离，以米为单位）
+#   + occdist_scale *（沿障碍物成本轨迹的最大障碍物成本（0-254））
+####################################################################
+
+  # (double, default: 0.6)控制器应该保持接近其给定路径的权重系数（分辨率*path_distance_bias为权重系数）
+  # 假如让机器人开始转向的时候不饶大圈，此处与goal_distance_bias按比例减小。
+  path_distance_bias: 2.0
+
+  # (double, default: 0.8)控制器应该尝试达到其本地目标的多少的权重系数（分辨率*goal_distance_bias为权重系数）
+  goal_distance_bias: 1.6
+
+  # (double, default: 0.01)控制器应该试图避开障碍物的权重系数
+  occdist_scale: 0.00
+
+  # (double, default: 0.0) 机器人旋转速度系数
+  # twirling_scale: 0.3
+
+  # (double, default: 0.325)距离机器人中心点的距离，以米为单位放置一个额外的得分点
+  forward_point_distance: 0.2
+
+  # (double, default: 0.2)机器人在碰撞之前必须停止的时间量，以便在几秒钟内将轨迹视为有效
+  stop_time_buffer: 1
+
+  # (double, default: 0.25)开始缩放机器人足迹的veolicty的绝对值，单位为m/s
+  scaling_speed: 0.25
+
+  # (double, default: 0.2)用于缩放机器人足迹的最大因素
+  max_scaling_factor: 0.2
+
+####################################################################
+# Oscillation Prevention Parameters 防震荡参数
+####################################################################
+  # (double, default: 0.05)：机器人运动多远距离才会重置振荡标记.
+  # 全局配置中如果配置了该参数，这里的配置则无法生效  ？
+  # oscillation_reset_dist: 1
+
+  # (double, default: 0.2)
+  # oscillation_reset_angle: 
+
+
+####################################################################
+# DEBUG调试使用的参数
+####################################################################
+
+  # (bool, default: false)：是否发布规划器在规划时将使用的路径成本网格。
+  # 如果为true，则〜/trajectory_cloud主题上将提供sensor_msgs/PointCloud2。
+  # 红色区域应该是评分较高的路径区域
+  publish_traj_pc : true
+
+  # (bool, default: false)：是否发布规划器在规划时将使用的成本地图。
+  # 如果为true，则〜/cost_cloud主题上将提供sensor_msgs/PointCloud2。
+  # 每个点云代表成本网格，并且每个单独的评分函数组件都有一个字段以及每个单元的总成本，并考虑评分参数。
+  # 红色区域应该是评分较高的区域
+  publish_cost_grid_pc: true
+
+  global_frame_id: map
+
+  # (double, default: 0) [0,1]
+  # restore_defaults: 

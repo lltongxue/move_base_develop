@@ -1,0 +1,55 @@
+# 决定了多远的距离以内被当成是障碍显示在local costmap里面
+obstacle_range: 1
+
+# 用来设置机器人检测自由空间的最大范围，设置为3.0意为在3米范围内，机器人将根据传感器的信息，清除范围内的自由空间
+raytrace_range: 3.0
+
+# 多边形机器人
+footprint: [[0.35,0.3],[0.35,-0.3],[-0.35,-0.3],[-0.35,0.3]]
+
+# 机器人膨胀半径
+# 设置该值会影响代价地图中膨胀层的运行运动范围的大小（蓝色区域）
+footprint_padding: 0.1
+
+# default:0.46 [0,10]:圆形机器人用半径表示
+# robot_radius: 0.3
+
+# 障碍物的高度范围，这个范围设的太小，会导致local map显示不出来
+# max_obstacle_height: 0.6
+# min_obstacle_height: 0.0
+
+# 用来设置你输入的障碍物检测方法：可以是激光和点云
+# observation_sources: scan
+# scan: {data_type: LaserScan, topic: /scan, marking: true, clearing: true, expected_update_rate: 0}
+
+obstacle_layer:
+  enabled: false
+  combination_method: 1
+  track_unknown_space: true
+  obstacle_range: 2.5
+  raytrace_range: 3.0
+  observation_sources: laser_scan_sensor
+  laser_scan_sensor: {
+    sensor_frame: laser,
+    data_type: LaserScan,
+    topic: scan,
+    marking: true,
+    clearing: true,
+    expected_update_rate: 1.5
+  }
+
+inflation_layer:
+  enabled: true
+  cost_scaling_factor: 1
+
+  #代价地图的膨胀半径
+  inflation_radius: 0.45
+ 
+static_layer:
+  enabled: true
+
+plugins:
+      - {name: static_map,       type: "costmap_2d::StaticLayer"}
+      - {name: inflation_layer,  type: "costmap_2d::InflationLayer"}
+      # - {name: obstacles,        type: "costmap_2d::VoxelLayer"}
+      # - {name: simplelayer,      type: "simple_layer_namespace::SimpleLayer"} 

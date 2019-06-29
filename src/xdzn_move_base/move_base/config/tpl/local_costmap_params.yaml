@@ -1,0 +1,69 @@
+local_costmap:
+#################################################
+# Coordinate frame and tf parameters 坐标系和TF参数
+#################################################
+
+   # (string, default: "/map")：Costmap操作的全局框架。
+   global_frame: map
+
+   # (string, default: "base_link")：机器人base link的框架名称。
+   robot_base_frame: base_link
+
+   # (double, default: 0.2) [0,10]：指定转换（tf）数据中可容忍的延迟（秒）。
+   # 这个参数可以保护在tf树中丢失一个link的同时仍然允许用户在系统中舒适地存在一定的延迟。
+   # 如果全局帧指定的坐标帧与robot基本帧参数之间的tf转换是早于ros::time::now() 的transform_tolerance时间，则导航堆栈将停止robot。
+   transform_tolerance: 1
+
+#################################################
+# Rate parameters 更新频率参数
+#################################################
+
+   # (double, default: 5.0) [0,100]：要更新地图的频率，单位Hz
+   update_frequency: 5.0
+
+   # (double, default: 0.0) [0,100]：地图发布显示信息的频率，单位Hz
+   publish_frequency: 1.0
+
+#################################################
+# Map management parameters 地图管理参数
+#################################################
+
+   # 是否使用静态地图
+   static_map: false
+
+   # (bool, default: false):是否使用滚动窗口版本的成本地图。如果static_map参数设置为true，则必须将此参数设置为false。
+   rolling_window: true
+
+   # default: 10 [0,2147483647]:局部地图的宽度(单位:m)
+   width: 3
+   
+   # default: 10 [0,2147483647]:局部地图的高度(单位:m)
+   height: 3
+
+   # default: 0.05 [0,50]:局部地图的分辨率(单位:m/pix)
+   # 不设置则使用地图配置信息(map.yaml)中的分辨率
+   resolution: 0.03   
+   
+   map_type: costmap
+
+   plugins:
+      - {name: static_layer,    type: "costmap_2d::StaticLayer"}
+      - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
+      # - {name: obstacle_layer,  type: "costmap_2d::ObstacleLayer"}
+
+   # 地图障碍层
+   # obstacle_layer:
+   #    observation_sources: scan  
+   #    scan: {
+   #       data_type: LaserScan, 
+   #       topic: /scan, 
+   #       marking: true, 
+   #       clearing: true, 
+   #       expected_update_rate: 0
+   # }
+
+   # 地图膨胀层
+   # 已在 costmap_common_params.yaml 进行了全局配置
+   # inflation_layer: 
+         # 膨胀半径
+   #     inflation_radius: 0.8
